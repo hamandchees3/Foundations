@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Foundations for Policymakers</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #fafafa;
+            color: #333;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #1a1a1a;
+            margin-top: 2rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            border-bottom: 3px solid #333;
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.3rem;
+            margin-top: 3rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #444;
+        }
+
+        p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+
+        strong {
+            color: #1a1a1a;
+        }
+
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 3rem 0;
+        }
+
+        code {
+            background: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+
+        blockquote {
+            border-left: 4px solid #666;
+            margin: 1.5rem 0;
+            padding: 0.5rem 1rem;
+            background: #f5f5f5;
+            font-style: italic;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1.5rem 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        /* Table of Contents styling */
+        #content > ul:first-of-type {
+            background: #f8f8f8;
+            padding: 1.5rem 2rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                max-width: none;
+                padding: 1rem;
+            }
+
+            h2 {
+                page-break-before: always;
+            }
+
+            h2:first-of-type {
+                page-break-before: avoid;
+            }
+        }
+
+        /* File loader */
+        #loader {
+            text-align: center;
+            padding: 2rem;
+            font-family: sans-serif;
+        }
+
+        #loader input {
+            margin: 1rem;
+            padding: 0.5rem;
+        }
+
+        #loader button {
+            padding: 0.5rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        #loader button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <h2>Markdown Reader</h2>
+        <p>Select a markdown file to view:</p>
+        <input type="file" id="fileInput" accept=".md,.markdown,.txt">
+        <br>
+        <button onclick="loadFile()">Load File</button>
+        <p style="color: #666; font-size: 0.9rem; margin-top: 2rem;">
+            Or drag and drop a .md file anywhere on this page
+        </p>
+    </div>
+
+    <div id="content"></div>
+
+    <script>
+        const content = document.getElementById('content');
+        const loader = document.getElementById('loader');
+        const fileInput = document.getElementById('fileInput');
+
+        function renderMarkdown(text) {
+            content.innerHTML = marked.parse(text);
+            loader.style.display = 'none';
+            content.style.display = 'block';
+        }
+
+        function loadFile() {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => renderMarkdown(e.target.result);
+                reader.readAsText(file);
+            }
+        }
+
+        // Drag and drop support
+        document.body.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.body.style.background = '#e8e8e8';
+        });
+
+        document.body.addEventListener('dragleave', (e) => {
+            document.body.style.background = '#fafafa';
+        });
+
+        document.body.addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.body.style.background = '#fafafa';
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => renderMarkdown(ev.target.result);
+                reader.readAsText(file);
+            }
+        });
+
+        // Auto-load if file parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileUrl = urlParams.get('file');
+        if (fileUrl) {
+            fetch(fileUrl)
+                .then(r => r.text())
+                .then(renderMarkdown)
+                .catch(err => {
+                    content.innerHTML = '<p style="color:red">Error loading file: ' + err + '</p>';
+                });
+        }
+    </script>
+</body>
+</html>
