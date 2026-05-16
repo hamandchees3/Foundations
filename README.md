@@ -1,4 +1,4 @@
-# AI Foundations for Policymakers
+# [AI Foundations for Policymakers](https://hamandchees3.github.io/Foundations/AI_Foundations_Summer2026.html)
 
 A handbook introducing the fundamentals of AI for a policy audience — how modern systems work, what they can and can't do, who the major players are, and which policy questions are most active. Produced for the Conservative AI Policy Fellowship.
 
